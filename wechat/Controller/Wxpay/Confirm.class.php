@@ -6,25 +6,25 @@
  */
 
 namespace Controller\Wxpay;
+use \Model\Wxpay;
 
 use Controller\BaseController;
 
 class Confirm extends BaseController {
-    public function response($orderId) {
-        //先确认用户是否登录
-        $this->ensureLogin();
-        //通过订单编号获取订单数据
-        $order = $this->wxpay_model->get($orderId);
-        //验证订单是否是当前用户
-        $this->_verifyUser($order);
+    public function response() {
+        //统一下单接口所需数据
+        $payData['sn'] = $data['sn'];
+        $payData['body'] = $data['goods_name'];
+        $payData['out_trade_no'] = $data['order_no'];
+        $payData['total_fee'] = $data['fee'];
+        $payData['attach'] = $data['attach'];
 
-        //取得支付所需要的订单数据
-        $orderData = $this->returnOrderData[$orderId];
         //取得jsApi所需要的数据
-        $wxJsApiData = $this->wxpay_model->wxPayJsApi($orderData);
+        $model = new Wxpay();
+        $wxJsApiData = $model->wxPayJsApi($payData);
         //将数据分配到模板去，在js里使用
-        $this->smartyData['wxJsApiData'] = json_encode($wxJsApiData, JSON_UNESCAPED_UNICODE);
-        $this->smartyData['order'] = $orderData;
-        $this->displayView('wxpay/confirm.tpl');
+        $this->assign('wxJsApiData', json_encode($wxJsApiData, JSON_UNESCAPED_UNICODE));
+        $this->assign('order', $payData);
+        $this->display('confirm');
     }
 }
