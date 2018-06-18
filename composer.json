@@ -1,0 +1,10 @@
+{
+    "autoload": {
+        "files": ["test/Testclass.php","test/function.php"],
+	"classmap": ["Class/"]
+    },
+    "require": {
+        "endroid/qr-code": "^2.5",
+        "php-ffmpeg/php-ffmpeg": "^0.11.1"
+    }
+}

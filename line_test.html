@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Chart.js折线图DEMO演示</title>
+		<script src="js/Chart.min.js"></script>
+		<meta name = "viewport" content = "initial-scale = 1, user-scalable = no">
+		<meta charset="UTF-8">
+		<style>
+			canvas{
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="canvas" height="200" width="200"></canvas>
+
+<div style="text-align:center;clear:both;">
+</div>
+	<script>
+
+		var lineChartData = {
+			labels : ["周一","周二","周三","周四","周五","周六","周日"],
+			datasets : [
+				{
+					fillColor : "rgba(220,220,220,0.5)",
+					strokeColor : "rgba(220,220,220,1)",
+					pointColor : "rgba(220,220,220,1)",
+					pointStrokeColor : "#fff",
+					data : [300,424,228,610,920,422,532]
+				}
+			]
+			
+		}
+
+	var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData);
+	
+	</script>
+	</body>
+</html>
