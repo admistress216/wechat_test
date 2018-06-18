@@ -79,12 +79,12 @@ class Wxpay {
         $url = $this->createOauthUrlForOpenid();
         //初始化
         $ch = curl_init();
-        curl_setopt($ch, CURL_TIMEOUT, $this->curl_timeout);
-        curl_setopt($ch, CURL_URL, $url);
-        curl_setopt($ch, CURL_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURL_SSL_VERIFYHOST, FALSE);
-        curl_setopt($ch, CURL_HEADER, FALSE);
-        curl_setopt($ch, CURL_RETURNTRANSFER, TRUE);
+//        curl_setopt($ch, CURLOPT_TIMEOUT, $this->curl_timeout);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         //执行curl
         $res = curl_exec($ch);
         curl_close($ch);

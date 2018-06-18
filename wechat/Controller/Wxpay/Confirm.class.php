@@ -13,11 +13,11 @@ use Controller\BaseController;
 class Confirm extends BaseController {
     public function response() {
         //统一下单接口所需数据
-        $payData['sn'] = $data['sn'];
-        $payData['body'] = $data['goods_name'];
-        $payData['out_trade_no'] = $data['order_no'];
-        $payData['total_fee'] = $data['fee'];
-        $payData['attach'] = $data['attach'];
+        $payData['sn'] = 1;
+//        $payData['body'] = $data['goods_name'];
+//        $payData['out_trade_no'] = $data['order_no'];
+//        $payData['total_fee'] = $data['fee'];
+//        $payData['attach'] = $data['attach'];
 
         //取得jsApi所需要的数据
         $model = new Wxpay();
