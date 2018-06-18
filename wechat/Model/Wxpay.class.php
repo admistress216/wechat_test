@@ -6,7 +6,7 @@ class Wxpay {
     public function wxPayUrl() {
         //重定向url
         $orderId = 1;
-        $redirectUrl = "http://www.itcen.cn/wxpay/confirm/".$orderId."?showwxpaytitle=1";
+        $redirectUrl = "http://wechat.cmdapps.com/wxpay/confirm/".$orderId."?showwxpaytitle=1";
         $urlParams['appid'] = Config::get('wechat', 'WxAppid');
         $urlParams['redirect_uri'] = $redirectUrl;
         $urlParams['response_type'] = 'code';
