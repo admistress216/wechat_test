@@ -1,5 +1,6 @@
 <?php
 namespace Model;
+use Vendor\Fundation\Config;
 
 class Wxpay {
     public function retWxPayUrl() {
@@ -71,7 +72,7 @@ class Wxpay {
         $unifiedOrder->setParam('out_trade_no', $payData['out_trade_no']); //商户订单号
         $unifiedOrder->setParam('total_fee', $payData['total_fee']);    //总金额
         $unifiedOrder->setParam('attach', $payData['attach']);  //附加数据
-        $unifiedOrder->setParam('notify_url', base_url('/Wxpay/pay_callback'));//通知地址
+        $unifiedOrder->setParam('notify_url', Config::get('wechat', 'NotifyUrl'));//通知地址
         $unifiedOrder->setParam('trade_type', $trade_type); //交易类型(JSAPI:公众号支付)
 
         //非必填参数，商户可根据实际情况选填
@@ -89,7 +90,7 @@ class Wxpay {
      * 返回微信订单状态
      */
     public function returnMessage($unifiedOrderResult,$field){
-        $arrMessage=array("resultCode"=>0,"resultType"=>"获取错误","resultMsg"=>"该字段为空");
+        $arrMessage = array("resultCode"=>0,"resultType"=>"获取错误","resultMsg"=>"该字段为空");
         if($unifiedOrderResult==null){
             $arrMessage["resultType"]="未获取权限";
             $arrMessage["resultMsg"]="请重新打开页面";

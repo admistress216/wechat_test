@@ -12,4 +12,7 @@ return [
     'Sslcert' => '',
     'Sslkey' => '',
     'Sslca' => '',
+
+    //回调地址
+    'NotifyUrl' => 'http://wechat.cmdapps.com/Wxpay/payCallback',
 ];
