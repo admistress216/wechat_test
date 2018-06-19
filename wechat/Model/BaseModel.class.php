@@ -1,6 +1,6 @@
 <?php
 /**
- * 所有接口基类
+ *
  */
 namespace Model;
 use Vendor\Fundation\Config;
