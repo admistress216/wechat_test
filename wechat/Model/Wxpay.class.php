@@ -72,7 +72,7 @@ class Wxpay {
         $unifiedOrder->setParam('total_fee', $payData['total_fee']);    //总金额
         $unifiedOrder->setParam('attach', $payData['attach']);  //附加数据
         $unifiedOrder->setParam('notify_url', base_url('/Wxpay/pay_callback'));//通知地址
-        $unifiedOrder->setParam('trade_type', $trade_type); //交易类型
+        $unifiedOrder->setParam('trade_type', $trade_type); //交易类型(JSAPI:公众号支付)
 
         //非必填参数，商户可根据实际情况选填
         //$unifiedOrder->setParam("sub_mch_id","XXXX");//子商户号

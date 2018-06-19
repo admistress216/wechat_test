@@ -6,7 +6,7 @@ define('WECHAT_DIR', __DIR__);
 spl_autoload_register(function($class){
     $filePath = WECHAT_DIR . '/' . str_replace('\\', '/', $class) . '.class.php';
     if (!file_exists($filePath)) {
-        die($class . 'not found');
+        die($class . ' not found');
     }
     require $filePath;
 });
