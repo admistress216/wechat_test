@@ -1,18 +1,17 @@
 <?php
-namespace Controller;
+/**
+ * 所有接口基类
+ */
+namespace Model;
+use Vendor\Fundation\Config;
 
-class BaseController {
-    private $tmpArray = [];
-
-    public function assign($name, $value) {
-        $this->tmpArray[$name] = $value;
-    }
-
-    public function display($filename) {
-        extract($this->tmpArray);
-        require WECHAT_DIR.'/View/'.$filename.'.php';
-    }
-
+class BaseModel {
+    /**
+     * 空字符过滤
+     *
+     * @param $value
+     * @return null|string
+     */
     public function trimString($value) {
         $ret = null;
         if (null != $value) {
@@ -25,46 +24,45 @@ class BaseController {
     }
 
     /**
-     * 产生随机字符串，不长于32位
-     * @param  integer $length [description]
-     * @return [type]          [description]
+     * 产生随机字符串
+     *
+     * @param int $len
+     * @return string
      */
-    public function createNoncestr($length = 32) {
+    public function createNoncestr($len = 32) {
         $chars = "abcdefghijklmnopqrstuvwxyz0123456789";
         $str = '';
-        for ($i = 0; $i < $length; $i++) {
+        for ($i=0; $i < $len; $i++) {
             $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
         }
-
         return $str;
     }
 
     /**
-     * 格式化参数 拼接字符串，签名过程需要使用
-     * @param [type] $urlParams     [description]
-     * @param [type] $needUrlencode [description]
+     * 字符串拼接,签名需要
+     *
+     * @param $urlParams
+     * @param $needUrlencode
+     * @return string
      */
     public function ToUrlParams($urlParams, $needUrlencode) {
-        $buff = "";
+        $buff = '';
         ksort($urlParams);
 
         foreach ($urlParams as $k => $v) {
-            if($needUrlencode) $v = urlencode($v);
-            $buff .= $k .'='. $v .'&';
-        }
+            if ($needUrlencode) $v = urlencode($v);
 
-        $reqString = '';
-        if (strlen($buff) > 0) {
-            $reqString = substr($buff, 0, strlen($buff) - 1);
-        }
+            $buff .= $k .'='. $v.'&';
 
-        return $reqString;
+        }
+        return  strlen($buff) > 0 ? rtrim($buff, '&') : '';
     }
 
     /**
      * 生成签名
-     * @param  [type] $params [description]
-     * @return [type]         [description]
+     *
+     * @param $obj
+     * @return string
      */
     public function getSign($obj) {
         foreach ($obj as $k => $v) {
@@ -74,7 +72,7 @@ class BaseController {
         ksort($params);
         $str = $this->ToUrlParams($params, false);
         //签名步骤二：在$str后加入key
-        $str = $str."$key=".WxPayConf::KEY;
+        $str = $str."&key=".Config::get('Key');
         //签名步骤三：md5加密
         $str = md5($str);
         //签名步骤四：所有字符转为大写
@@ -85,14 +83,15 @@ class BaseController {
 
     /**
      * array转xml
-     * @param  [type] $arr [description]
-     * @return [type]      [description]
+     *
+     * @param $arr
+     * @return string
      */
     public function arrayToXml($arr) {
         $xml = "<xml>";
-        foreach ($arr as $k => $v) {
+        foreach ($arr as $key => $val) {
             if (is_numeric($val)) {
-                $xml .= "<".$key.">".$key."</".$key.">";
+                $xml .= "<".$key.">".$val."</".$key.">";
             } else {
                 $xml .= "<".$key."><![CDATA[".$val."]]></".$key.">";
             }
@@ -103,8 +102,9 @@ class BaseController {
 
     /**
      * 将xml转为array
-     * @param  [type] $xml [description]
-     * @return [type]      [description]
+     *
+     * @param $xml
+     * @return array|mixed|object
      */
     public function xmlToArray($xml) {
         $arr = json_decode(json_encode(simplexml_load_string($xml, 'SinpleXMLElement', LIBXML_NOCDATA)), true);
@@ -123,20 +123,20 @@ class BaseController {
         //初始化curl
         $ch = curl_init();
         //设置超时
-        curl_setopt($ch, CURL_TIMEOUT, $second);
-        curl_setopt($ch, CURL_URL, $url);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $second);
+        curl_setopt($ch, CURLOPT_URL, $url);
         //这里设置代理，如果有的话
         //curl_setopt($ch,CURLOPT_PROXY, '8.8.8.8');
         //curl_setopt($ch,CURLOPT_PROXYPORT, 8080);
-        curl_setopt($ch, CURL_SSL_VERIFYHOST, FALSE);
-        curl_setopt($ch, CURL_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         //设置header
-        curl_setopt($ch, CURL_HEADER, FALSE);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
         //要求结果为字符串且输出到屏幕上
-        curl_setopt($ch, CURL_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         //以post方式提交
-        curl_setopt($ch, CURL_POST, TRUE);
-        curl_setopt($ch, CURL_POSTFIELDS, $xml);
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
         //执行curl
         $res = curl_exec($ch);
 
@@ -151,4 +151,5 @@ class BaseController {
             return false;
         }
     }
+
 }

@@ -6,7 +6,7 @@ use \Model\Wxpay;
 class Index extends BaseController {
     public function response() {
         $model = new Wxpay();
-        $this->assign('wxPayUrl', $model->wxPayUrl());
+        $this->assign('wxPayUrl', $model->retWxPayUrl());
         $this->display('index');
     }
 }

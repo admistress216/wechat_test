@@ -69,7 +69,7 @@ class Wxpay_model extends CI_Model {
     public function getResult($payData, $trade_type, $openid = null) {
         $unifiedOrder = new UnifiedOrder_handle();
 
-        if ($opneid != null) {
+        if ($openid != null) {
             $unifiedOrder->setParam('openid', $openid);
         }
         $unifiedOrder->setParam('body', $payData['body']);  //商品描述
@@ -287,7 +287,7 @@ class Wxpay_server_handle extends JsApi_common{
      */
     public function checkSign() {
         $tmpData = $this->data;
-        unset($temData['sign']);
+        unset($tmpData['sign']);
         $sign = $this->getSign($tmpData);
         if ($this->data['sign'] == $sign) {
             return true;
@@ -301,7 +301,7 @@ class Wxpay_server_handle extends JsApi_common{
      */
     function setReturnParameter($parameter, $parameterValue)
     {
-        $this->returnParameters[$this->trimString($parameter)] = $this->trimString($parameterValue);
+        $this->returnParams[$this->trimString($parameter)] = $this->trimString($parameterValue);
     }
 
     /**
@@ -331,7 +331,7 @@ class Wxpay_client_handle extends JsApi_common{
      * @param [type] $paramValue [description]
      */
     public function setParam($param, $paramValue) {
-        $this->params[$this->tirmString($param)] = $this->trimString($paramValue);
+        $this->params[$this->trimString($param)] = $this->trimString($paramValue);
     }
 
     /**
@@ -351,7 +351,7 @@ class Wxpay_client_handle extends JsApi_common{
      */
     public function postxml() {
         $xml = $this->createXml();
-        $this->response = $this->postXmlCurl($xml, $this->curl, $this->curl_timeout);
+        $this->response = $this->postXmlCurl($xml, $this->url, $this->curl_timeout);
 
         return $this->response;
     }
@@ -438,7 +438,7 @@ class JsApi_common {
         ksort($params);
         $str = $this->ToUrlParams($params, false);
         //签名步骤二：在$str后加入key
-        $str = $str."$key=".WxPayConf::KEY;
+        $str = $str."&key=".WxPayConf::KEY;
         //签名步骤三：md5加密
         $str = md5($str);
         //签名步骤四：所有字符转为大写
@@ -454,7 +454,7 @@ class JsApi_common {
      */
     public function arrayToXml($arr) {
         $xml = "<xml>";
-        foreach ($arr as $k => $v) {
+        foreach ($arr as $key => $val) {
             if (is_numeric($val)) {
                 $xml .= "<".$key.">".$key."</".$key.">";
             } else {
@@ -487,20 +487,20 @@ class JsApi_common {
         //初始化curl
         $ch = curl_init();
         //设置超时
-        curl_setopt($ch, CURL_TIMEOUT, $second);
-        curl_setopt($ch, CURL_URL, $url);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $second);
+        curl_setopt($ch, CURLOPT_URL, $url);
         //这里设置代理，如果有的话
         //curl_setopt($ch,CURLOPT_PROXY, '8.8.8.8');
         //curl_setopt($ch,CURLOPT_PROXYPORT, 8080);
-        curl_setopt($ch, CURL_SSL_VERIFYHOST, FALSE);
-        curl_setopt($ch, CURL_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         //设置header
-        curl_setopt($ch, CURL_HEADER, FALSE);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
         //要求结果为字符串且输出到屏幕上
-        curl_setopt($ch, CURL_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         //以post方式提交
-        curl_setopt($ch, CURL_POST, TRUE);
-        curl_setopt($ch, CURL_POSTFIELDS, $xml);
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
         //执行curl
         $res = curl_exec($ch);
 

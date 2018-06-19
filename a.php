@@ -1,20 +1,26 @@
 <?php
-class C {
-    public static function who(){
-        echo __CLASS__;
-    }
-}
+/**
+ * 格式化参数 拼接字符串，签名过程需要使用
+ * @param [type] $urlParams     [description]
+ * @param [type] $needUrlencode [description]
+ */
+function ToUrlParams($urlParams, $needUrlencode) {
+    $buff = "";
+    ksort($urlParams);
 
-class A extends C{
-    public static function test() {
-        static::who(); // 后期静态绑定从这里开始
+    foreach ($urlParams as $k => $v) {
+        if($needUrlencode) $v = urlencode($v);
+        $buff .= $k .'='. $v .'&';
     }
-}
-
-class B extends A {
-    public static function who() {
-        echo __CLASS__;
+    $reqString = '';
+    if (strlen($buff) > 0) {
+        $reqString = substr($buff, 0, strlen($buff) - 1);
     }
-}
 
-B::test();
+    return $reqString;
+}
+$array = [
+    'test1' => '111',
+    'test2' => '222'
+];
+echo ToUrlParams($array,false);
