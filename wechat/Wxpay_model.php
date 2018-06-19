@@ -226,7 +226,7 @@ class JsApi_handle extends JsApi_common {
         $res = curl_exec($ch);
         curl_close($ch);
         //取出openid
-        $data = json_decode($res);
+        $data = json_decode($res, true);
         if (isset($data['openid'])) {
             $this->openid = $data['openid'];
         } else {
