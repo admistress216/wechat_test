@@ -1,7 +1,5 @@
 <?php
 namespace Model;
-use Vendor\Fundation\Config;
-use Model\JsApiModel;
 
 class Wxpay {
     public function retWxPayUrl() {
@@ -14,21 +12,25 @@ class Wxpay {
      * @param  [type] $payData [description]
      * @return [type]       [description]
      */
-    public function wxPayJsApi($payData) {
+    public function wxPayJsApi($data) {
+        $jsApi = new JsApiModel();
+        //统一下单接口所需数据
+        $payData = $this->returnData($data);
         //获取code码，用以获取openid
-        $this->code = $_GET['code'];
+        $code = $_GET['code'];
+        $jsApi->setCode($code);
 
         //通过code获取openid
-        $openid = $this->getOpenId();
+        $openid = $jsApi->getOpenId();
 
         $unifiedOrderResult = null;
         if ($openid != null) {
             //取得统一下单接口返回的数据
             $unifiedOrderResult = $this->getResult($payData, 'JSAPI', $openid);
             //获取订单接口状态
-            $returnMessage = $this->returnMessage($unifiedOrder, 'prepay_id');
+            $returnMessage = $this->returnMessage($unifiedOrderResult, 'prepay_id');
             if ($returnMessage['resultCode']) {
-                $jsApi->setPrepayId($retuenMessage['resultField']);
+                $jsApi->setPrepayId($returnMessage['resultField']);
                 //取得wxjsapi接口所需要的数据
                 $returnMessage['resultData'] = $jsApi->getParams();
             }
@@ -38,46 +40,18 @@ class Wxpay {
     }
 
     /**
-     * 通过curl 向微信提交code 用以获取openid
-     * @return [type] [description]
+     * 统一下单接口所需要的数据
+     * @param  [type] $data [description]
+     * @return [type]       [description]
      */
-    public function getOpenId() {
-        //创建openid 的链接
-        $url = $this->createOauthUrlForOpenid();
-        //初始化
-        $ch = curl_init();
-//        curl_setopt($ch, CURLOPT_TIMEOUT, $this->curl_timeout);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        curl_setopt($ch, CURLOPT_HEADER, FALSE);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        //执行curl
-        $res = curl_exec($ch);
-        curl_close($ch);
-        //取出openid
-        $data = json_decode($res, true);
-        if (isset($data['openid'])) {
-            $this->openid = $data['openid'];
-        } else {
-            return null;
-        }
+    public function returnData($data) {
+        $payData['sn'] = $data['sn'];
+        $payData['body'] = $data['goods_name'];
+        $payData['out_trade_no'] = $data['order_no'];
+        $payData['total_fee'] = $data['fee'];
+        $payData['attach'] = $data['attach'];
 
-        return $this->openid;
-
-    }
-
-    /**
-     * 生成可以获取openid 的URL
-     * @return [type] [description]
-     */
-    public function createOauthUrlForOpenid() {
-        $urlParams['appid'] = Config::get('wechat', 'WxAppid');
-        $urlParams['secret'] = Config::get('wechat', 'WxSecret');
-        $urlParams['code'] = $this->code;
-        $urlParams['grant_type'] = "authorization_code";
-        $queryString = $this->ToUrlParams($urlParams, false);
-        return "https://api.weixin.qq.com/sns/oauth2/access_token?".$queryString;
+        return $payData;
     }
 
     /**
@@ -88,7 +62,7 @@ class Wxpay {
      * @return [type]             [description]
      */
     public function getResult($payData, $trade_type, $openid = null) {
-        $url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+        $unifiedOrder = new UnifiedOrderModel();
 
         if ($openid != null) {
             $unifiedOrder->setParam('openid', $openid);
@@ -137,5 +111,27 @@ class Wxpay {
             $arrMessage["resultField"] = $unifiedOrderResult[$field];
         }
         return $arrMessage;
+    }
+
+    /**
+     * 微信回调接口返回  验证签名并回应微信
+     * @param  [type] $xml [description]
+     * @return [type]      [description]
+     */
+    public function wxPayNotify($xml) {
+        $notify = new ResponseModel();
+        $notify->saveData($xml);
+        //验证签名，并回复微信
+        //对后台通知交互时，如果微信收到商户的应答不是成功或者超时，微信认为通知失败
+        //微信会通过一定的策略（如30分钟共8次），定期重新发起通知
+        if ($notify->checkSign() == false) {
+            $notify->setReturnParameter("return_code","FAIL");//返回状态码
+            $notify->setReturnParameter("return_msg","签名失败");//返回信息
+        } else {
+            $notify->checkSign=TRUE;
+            $notify->setReturnParameter("return_code","SUCCESS");//设置返回码
+        }
+
+        return $notify;
     }
 }

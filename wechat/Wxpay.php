@@ -26,7 +26,7 @@ class Wxpay {
         $this->_verifyUser($order);
 
         //取得支付所需要的订单数据
-        $orderData = $this->returnOrderData[$orderId];
+        $orderData = $this->returnOrderData($orderId);
         //取得jsApi所需要的数据
         $wxJsApiData = $this->wxpay_model->wxPayJsApi($orderData);
         //将数据分配到模板去，在js里使用

@@ -5,7 +5,7 @@
 namespace Model;
 use Vendor\Fundation\Config;
 
-class UnifiedOrderModel extends ResponseModel {
+class UnifiedOrderModel extends RequestModel {
     public function __construct() {
         //设置接口链接
         $this->url = "https://api.mch.weixin.qq.com/pay/unifiedorder";

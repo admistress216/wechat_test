@@ -33,9 +33,9 @@ class Wxpay_model extends CI_Model {
             //取得统一下单接口返回的数据
             $unifiedOrderResult = $this->getResult($payData, 'JSAPI', $openid);
             //获取订单接口状态
-            $returnMessage = $this->returnMessage($unifiedOrder, 'prepay_id');
+            $returnMessage = $this->returnMessage($unifiedOrderResult, 'prepay_id');
             if ($returnMessage['resultCode']) {
-                $jsApi->setPrepayId($retuenMessage['resultField']);
+                $jsApi->setPrepayId($returnMessage['resultField']);
                 //取得wxjsapi接口所需要的数据
                 $returnMessage['resultData'] = $jsApi->getParams();
             }
