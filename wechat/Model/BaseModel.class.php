@@ -72,7 +72,7 @@ class BaseModel {
         ksort($params);
         $str = $this->ToUrlParams($params, false);
         //签名步骤二：在$str后加入key
-        $str = $str."&key=".Config::get('Key');
+        $str = $str."&key=".Config::get('wechat', 'Key');
         //签名步骤三：md5加密
         $str = md5($str);
         //签名步骤四：所有字符转为大写
