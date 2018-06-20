@@ -34,7 +34,7 @@ class Confirm extends BaseController {
         $data = [
             'id' => 1,
             'user_id' => 11111111,
-            'sn' => 102130230232,
+            'sn' => time(),
             'fee' => 1,
             'time' => '2018-01-12 12:00:00',
             'goods_name' => '测试商品',
