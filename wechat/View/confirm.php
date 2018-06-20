@@ -23,6 +23,8 @@
             function(res){
                 if(res.err_msg == "get_brand_wcpay_request:ok" ){
                     window.location.href="/wxpay/paysuccess/"+<?php echo $order['sn'];?>;
+                } else {
+                    alert(res.err_msg);
                 }
 
             }
