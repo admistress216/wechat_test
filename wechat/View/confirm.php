@@ -5,6 +5,7 @@
     <!-- Make sure that we can test against real IE8 -->
     <meta http-equiv="X-UA-Compatible" content="IE=8" />
     <title></title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 </head>
 <body>
 
