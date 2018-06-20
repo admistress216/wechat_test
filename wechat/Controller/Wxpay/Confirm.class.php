@@ -38,7 +38,7 @@ class Confirm extends BaseController {
             'fee' => 0.1,
             'time' => '2018-01-12 12:00:00',
             'goods_name' => '测试商品',
-            'attach' => ''
+            'attach' => '附加'
         ];
         //支付前缓存所需要的数据
         $orderData['id'] = $data['id'];
