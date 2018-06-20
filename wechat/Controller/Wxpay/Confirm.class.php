@@ -35,7 +35,7 @@ class Confirm extends BaseController {
             'id' => 1,
             'user_id' => 11111111,
             'sn' => 102130230232,
-            'fee' => 0.1,
+            'fee' => 1,
             'time' => '2018-01-12 12:00:00',
             'goods_name' => '测试商品',
             'attach' => '附加'
