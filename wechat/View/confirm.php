@@ -12,7 +12,7 @@
 </body>
 <script type="text/javascript">
     //将数据付给js变量
-    var wxJsApiData = <?php echo $wxJsApiData ?>;
+    var wxJsApiData = <?php echo $wxJsApiData; ?>;
     function onBridgeReady()
     {
         //格式参考官方文档 https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6
@@ -21,7 +21,7 @@
             $.parseJSON(wxJsApiData.resultData),
             function(res){
                 if(res.err_msg == "get_brand_wcpay_request:ok" ){
-                    window.location.href="/wxpay/paysuccess/"+{$order.sn};
+                    window.location.href="/wxpay/paysuccess/"+<?php echo $order['sn'];?>;
                 }
 
             }
